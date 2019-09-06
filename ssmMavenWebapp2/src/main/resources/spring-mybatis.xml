@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+<!-- 
+	spring与mybatis整合配置文件需要做的事（通过配置bean）：
+		1.配置需要扫描注解的包（不是配置bean）
+		2.通过相应的类加载.properties配置文件到IOC容器中
+		3.配置数据源
+		4.spring与mybatis整合，加载整合mybatis-spring的jar文件中的SqlSessionFactoryBean到IOC容器
+		5.配置Mapper扫描器MapperScannerConfigurer，即配置需要扫描的包
+		6.配置事务管理DataSourceTransactionManager
+
+ -->	
+	<!-- 引入properties配置文件 -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:jdbc.properties"></property>
+	</bean>
+	<!-- 配置数据源 -->
+	<bean id="datasource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${driver}"></property>
+		<property name="url" value="${url}"></property>
+		<property name="username" value="${username}"></property>
+		<property name="password" value="${password}"></property>
+		 <!-- 初始化连接大小 -->  
+        <property name="initialSize" value="${initialSize}"></property>  
+        <!-- 连接池最大数量 -->  
+        <property name="maxActive" value="${maxActive}"></property>  
+        <!-- 连接池最大空闲 -->  
+        <property name="maxIdle" value="${maxIdle}"></property>  
+        <!-- 连接池最小空闲 -->  
+        <property name="minIdle" value="${minIdle}"></property>  
+        <!-- 获取连接最大等待时间 -->  
+        <property name="maxWait" value="${maxWait}"></property>  
+	</bean>
+	<!-- spring和mybatis的整合，配置mybatis需要的核心类 SqlSessionFactoryBean-->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="datasource"></property>
+		<!-- 自动扫描mapping目录下的所有xml文件 -->
+		<property name="mapperLocations" value="classpath:webapp/mapping/*.xml"></property>
+	</bean>
+    <!-- 将Mybatis的sqlSessionFactory交给spring -->  
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+    	<!-- 指定包中的所有接口产生与之对应的动态代理对象（对象名是首字母小写的接口名） -->
+        <property name="basePackage" value="webapp.dao" />  
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>  
+    </bean>  
+    <!-- 事务管理 -->
+	<bean id="transcationManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="datasource"></property>
+	</bean>
+</beans>

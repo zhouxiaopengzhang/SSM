@@ -1,0 +1,4 @@
+注意事项：
+	1.使用maven创建web项目生成的项目名不一定就是部署在Tomcat上的项目名，具体的需要到Tomcat的webapps目录。
+	2.当将整合的项目部署到Tomcat服务器中，springMVC的控制器类上的@RequestMapping的值需要在项目名后（springboot访问时不需要项目名）。
+	

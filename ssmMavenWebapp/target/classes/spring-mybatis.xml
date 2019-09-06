@@ -9,8 +9,16 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
-	<!-- 扫描有注解的包 -->
-	<context:component-scan base-package="org.zxp.servlet,org.zxp.exceptionhandler"></context:component-scan>
+<!-- 
+	spring与mybatis整合配置文件需要做的事（通过配置bean）：
+		1.配置需要扫描注解的包（不是配置bean）
+		2.通过相应的类加载.properties配置文件到IOC容器中
+		3.配置数据源
+		4.spring与mybatis整合，加载整合mybatis-spring的jar文件中的SqlSessionFactoryBean到IOC容器
+		5.配置Mapper扫描器MapperScannerConfigurer，即配置需要扫描的包
+		6.配置事务管理DataSourceTransactionManager
+
+ -->	
 	<!-- 引入properties配置文件 -->
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location" value="classpath:jdbc.properties"></property>

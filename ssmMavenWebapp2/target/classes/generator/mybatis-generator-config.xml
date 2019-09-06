@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+		PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+		"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<!-- 
+	该配置文件主要做的事情：
+	1.连接数据库，要不然如何根据数据库的表生成实体类呢。
+	2.指定要生成资源（实体类、mapper.xml、mapper.java）的位置，如果不指定响应资源的位置那么就不会生成未指定的资源
+	3.指定数据库中想要生成的表。
+ -->		
+<generatorConfiguration>
+	
+	<context id="MySqlContext" targetRuntime="MyBatis3Simple"
+			 defaultModelType="flat">
+		<property name="beginningDelimiter" value="`"/>
+		<property name="endingDelimiter" value="`"/>
+	
+		<commentGenerator>
+			<property name="suppressDate" value="true"/>
+			<property name="addRemarkComments" value="true"/>
+		</commentGenerator>
+	<!--1.配置数据库连接的信息：驱动类、连接地址、用户名、密码 -->
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver" 
+						connectionURL="jdbc:mysql://localhost:3306/ssm?useUnicode=true&amp;characterEncoding=utf8"
+						userId="root"
+						password="Zp970321">
+		</jdbcConnection>
+		
+		<!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 和 
+            NUMERIC 类型解析为java.math.BigDecimal -->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+     <!-- 2.指定相应资源生成的位置 -->
+		<!-- targetProject:生成PO类的位置 -->
+		<javaModelGenerator targetPackage="webapp.model" 
+							targetProject="src\main\java">
+			<property name="trimStrings" value="true"/>
+		</javaModelGenerator>
+		<!-- targetProject:mapper映射文件生成的位置 -->
+		<sqlMapGenerator targetPackage="webapp.mapping" targetProject="src\main\java"/>
+		<!-- targetPackage：mapper接口生成的位置 -->
+		<javaClientGenerator targetPackage="webapp.dao" type="XMLMAPPER" targetProject="src\main\java"></javaClientGenerator>
+	<!-- 3.指定数据库中的表 -->
+		<!-- 这里指定了数据库中所有表 -->
+		<table tableName="%">
+			<!-- 指定自动生成的主键 -->
+			<generatedKey column="id" sqlStatement="MySql"/>
+		</table>
+	</context>
+</generatorConfiguration>
